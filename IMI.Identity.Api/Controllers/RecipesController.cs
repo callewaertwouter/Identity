@@ -1,9 +1,11 @@
 ﻿using IMI.Identity.Core.DTOs.Recipe;
 using IMI.Identity.Core.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IMI.Identity.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class RecipesController : ControllerBase

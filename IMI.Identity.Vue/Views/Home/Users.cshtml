@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Users with Vue";
+}
+
+<div class="text-center">
+    <h1 class="display-3">Users</h1>
+</div>
+
+<div id="app" class="row">
+    <div class="col-md-6">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>E-mail</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="user in users" :key="user.id" v-on:click="getUserDetails(user)">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <div v-if="currentUser">
+            <div class="form-group">
+                <label>ID</label>
+                <input class="form-control" v-model="currentUser.id" readonly />
+            </div>
+            <div class="form-group">
+                <label>E-mail</label>
+                <input class="form-control" v-model="currentUser.email" readonly />
+            </div>
+            <div class="form-group">
+                <label>Recipes</label>
+                <ul>
+                    <li v-for="recipe in currentUser.recipes" :key="recipe.id">
+                        {{ recipe.title }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/vue/vue.js"></script>
+    <script src="~/lib/axios/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/css/site.css" />
+
+    <script>
+        const baseUrl = "https://localhost:7171/api/users";
+        var app = new Vue({
+            el: "#app",
+            data: {
+                users: [],
+                currentUser: null,
+                errorMessage: "",
+                isLoading: false
+            },
+
+            created: function () {
+                var self = this;
+                self.fetchUsers();
+            },
+
+            methods: {
+                fetchUsers: function () {
+                    var self = this;
+                    axios.get(baseUrl)
+                        .then(function (response) {
+                            self.users = response.data;
+                            console.log(self.users);
+                        })
+                        .catch(function (error) {
+                            console.error(error);
+                        });
+                },
+
+                getUserDetails: function (user) {
+                    var self = this;
+                    self.currentUser = user;
+                }
+            }
+        });
+    </script>
+}
